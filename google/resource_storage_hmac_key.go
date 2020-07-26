@@ -20,8 +20,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func resourceStorageHmacKey() *schema.Resource {
@@ -248,7 +248,6 @@ func resourceStorageHmacKeyUpdate(d *schema.ResourceData, meta interface{}) erro
 			log.Printf("[DEBUG] Finished updating HmacKey %q: %#v", d.Id(), res)
 		}
 
-		d.SetPartial("state")
 	}
 
 	d.Partial(false)

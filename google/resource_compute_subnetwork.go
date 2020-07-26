@@ -15,6 +15,7 @@
 package google
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
@@ -22,13 +23,13 @@ import (
 	"time"
 
 	"github.com/apparentlymart/go-cidr/cidr"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/customdiff"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 // Whether the IP CIDR change shrinks the block.
-func isShrinkageIpCidr(old, new, _ interface{}) bool {
+func isShrinkageIpCidr(_ context.Context, old, new, _ interface{}) bool {
 	_, oldCidr, oldErr := net.ParseCIDR(old.(string))
 	_, newCidr, newErr := net.ParseCIDR(new.(string))
 
@@ -215,12 +216,6 @@ must be unique within the subnetwork.`,
 				Description: `The gateway address for default routes to reach destination addresses
 outside this subnetwork.`,
 			},
-			"enable_flow_logs": {
-				Type:     schema.TypeBool,
-				Computed: true,
-				Optional: true,
-				Removed:  "This field is being removed in favor of log_config. If log_config is present, flow logs are enabled. Please remove this field",
-			},
 			"fingerprint": {
 				Type:        schema.TypeString,
 				Computed:    true,
@@ -241,7 +236,7 @@ outside this subnetwork.`,
 	}
 }
 
-func resourceComputeSubnetworkSecondaryIpRangeSetStyleDiff(diff *schema.ResourceDiff, meta interface{}) error {
+func resourceComputeSubnetworkSecondaryIpRangeSetStyleDiff(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	keys := diff.GetChangedKeysPrefix("secondary_ip_range")
 	if len(keys) == 0 {
 		return nil
@@ -468,8 +463,6 @@ func resourceComputeSubnetworkUpdate(d *schema.ResourceData, meta interface{}) e
 		if err != nil {
 			return err
 		}
-
-		d.SetPartial("ip_cidr_range")
 	}
 	if d.HasChange("private_ip_google_access") {
 		obj := make(map[string]interface{})
@@ -498,8 +491,6 @@ func resourceComputeSubnetworkUpdate(d *schema.ResourceData, meta interface{}) e
 		if err != nil {
 			return err
 		}
-
-		d.SetPartial("private_ip_google_access")
 	}
 	if d.HasChange("log_config") {
 		obj := make(map[string]interface{})
@@ -539,8 +530,6 @@ func resourceComputeSubnetworkUpdate(d *schema.ResourceData, meta interface{}) e
 		if err != nil {
 			return err
 		}
-
-		d.SetPartial("log_config")
 	}
 	if d.HasChange("secondary_ip_range") {
 		obj := make(map[string]interface{})
@@ -580,8 +569,6 @@ func resourceComputeSubnetworkUpdate(d *schema.ResourceData, meta interface{}) e
 		if err != nil {
 			return err
 		}
-
-		d.SetPartial("secondary_ip_range")
 	}
 
 	d.Partial(false)

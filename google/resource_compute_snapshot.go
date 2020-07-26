@@ -21,7 +21,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceComputeSnapshot() *schema.Resource {
@@ -392,9 +392,6 @@ func resourceComputeSnapshotUpdate(d *schema.ResourceData, meta interface{}) err
 		if err != nil {
 			return err
 		}
-
-		d.SetPartial("labels")
-		d.SetPartial("label_fingerprint")
 	}
 
 	d.Partial(false)
