@@ -22,12 +22,6 @@ resource "google_compute_instance_template" "default" {
   name        = "appserver-template"
   description = "This template is used to create app server instances."
 
-  tags = ["foo", "bar"]
-
-  labels = {
-    environment = "dev"
-  }
-
   instance_description = "description assigned to instances"
   machine_type         = "n1-standard-1"
   can_ip_forward       = false
