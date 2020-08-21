@@ -52,9 +52,6 @@ resource "google_compute_instance_from_template" "tpl" {
 
   // Override fields from instance template
   can_ip_forward = false
-  labels = {
-    my_key = "my_value"
-  }
 }
 ```
 
